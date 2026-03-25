@@ -5,32 +5,16 @@ on: [push, pull_request]      # When to run this workflow
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      build_id: ${{ steps.build_step.outputs.build_id }}
     steps:
-      - run: echo "setting up environment"
-      - run: echo "Building..."
-  parallel-exe:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "parallel"
-      - run: echo ".."
-
-  test:
-    needs: build          # Wait for build to complete
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Testing environment"
-      - run: echo "Testing..."
-  parallel-test:
+      - name: Generate build ID
+        id: build_step
+        run: echo "build_id=$(date +%s)" >> $GITHUB_OUTPUT
+  
+  deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: echo "parallel"
-      - run: echo ".."
-
-
-  deploy:
-    needs: [build, test]  # Wait for both build and test
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Deployment Environment"
-      - run: echo "Deploying..."
+      - name: Use build ID
+        run: echo "Deploying build ${{ needs.build.outputs.build_id }}"
