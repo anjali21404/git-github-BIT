@@ -6,20 +6,31 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Buliding"
+      - run: echo "setting up environment"
       - run: echo "Building..."
-  
+  parallel-exe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "parallel"
+      - run: echo ".."
+
   test:
     needs: build          # Wait for build to complete
     runs-on: ubuntu-latest
     steps:
-      - run: echo("testing")
+      - run: echo "Testing environment"
       - run: echo "Testing..."
-  
+  parallel-test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "parallel"
+      - run: echo ".."
+
+
   deploy:
     needs: [build, test]  # Wait for both build and test
     runs-on: ubuntu-latest
     steps:
-      - run: echo "application"
+      - run: echo "Deployment Environment"
       - run: echo "Deploying..."
-  
